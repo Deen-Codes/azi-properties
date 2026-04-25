@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mortgage Calculator UK | Repayment, Stamp Duty &amp; Affordability | AZI Mortgages</title>
+  <meta
+    name="description"
+    content="Three mortgage calculators in one place: monthly repayment, UK Stamp Duty (including first-time buyer and second home), and affordability / maximum borrowing. Instant, no sign-up."
+  />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+  <style>
+    /* ============ MORTGAGE CALCULATOR STYLES ============ */
+    .calc-hero {
+      padding-top: 72px;
+      padding-bottom: 32px;
+    }
+
+    .calc-shell {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 640px) {
+      .calc-shell { padding: 22px 18px; }
+    }
+
+    .calc-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 6px;
+      margin-bottom: 28px;
+    }
+
+    .calc-tab {
+      flex: 1 1 120px;
+      min-height: 48px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .calc-tab:hover { color: var(--white); }
+
+    .calc-tab.is-active {
+      background: var(--accent);
+      color: #1a1309;
+    }
+
+    .calc-panel { display: none; }
+    .calc-panel.is-active { display: block; }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      align-items: start;
+    }
+
+    @media (max-width: 780px) {
+      .calc-grid { grid-template-columns: 1fr; gap: 26px; }
+    }
+
+    .calc-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .calc-field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .calc-input-wrap {
+      position: relative;
+    }
+
+    .calc-input-prefix,
+    .calc-input-suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .calc-input-prefix { left: 16px; }
+    .calc-input-suffix { right: 16px; }
+
+    .calc-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 18px 0 32px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .calc-input.no-prefix { padding-left: 18px; }
+    .calc-input.has-suffix { padding-right: 48px; }
+
+    .calc-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .calc-slider {
+      width: 100%;
+      margin-top: 10px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 0 4px rgba(198, 164, 106, 0.15);
+    }
+    .calc-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .calc-radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calc-radio {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .calc-radio input { display: none; }
+
+    .calc-radio label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 0;
+    }
+
+    .calc-radio input:checked + label {
+      border-color: var(--accent);
+      background: rgba(198, 164, 106, 0.12);
+      color: var(--white);
+    }
+
+    .calc-results {
+      background: rgba(198, 164, 106, 0.06);
+      border: 1px solid rgba(198, 164, 106, 0.25);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .calc-result-headline {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(198, 164, 106, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .calc-result-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .calc-result-value {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--white);
+    }
+
+    .calc-result-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .calc-result-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .calc-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    .calc-result-row span:first-child { color: var(--muted); }
+    .calc-result-row span:last-child {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .calc-result-note {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(198, 164, 106, 0.2);
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .calc-breakdown {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .calc-cta-row {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .calc-disclaimer {
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo">AZI Mortgages</div>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="mortgages.html">Mortgages</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="mortgage-calculator.html">Calculator</a>
+        <a href="articles.html">Articles</a>
+        <a href="contact.html">Contact</a>
+      <a href="book-consultation.html" class="btn btn-gold nav-cta-mobile">Book a Consultation</a>
+      </nav>
+      <a href="book-consultation.html" class="btn btn-gold nav-cta-desktop">Book a Consultation</a>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="section calc-hero">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-kicker">Mortgage Calculator</p>
+          <h1>Monthly repayment, Stamp Duty and affordability — in one place</h1>
+          <p class="section-subtext">
+            Three quick calculators sit behind the same tab. Estimate your monthly payment, your UK Stamp Duty bill, and a rough maximum borrowing figure. Instant, no sign-up, no data stored.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0;">
+      <div class="container">
+        <div class="calc-shell">
+
+          <div class="calc-tabs" role="tablist">
+            <button type="button" class="calc-tab is-active" data-tab="repayment" role="tab" aria-selected="true">Repayment</button>
+            <button type="button" class="calc-tab" data-tab="stamp" role="tab" aria-selected="false">Stamp Duty</button>
+            <button type="button" class="calc-tab" data-tab="afford" role="tab" aria-selected="false">Affordability</button>
+          </div>
+
+          <!-- ============ REPAYMENT PANEL ============ -->
+          <div class="calc-panel is-active" id="panel-repayment" role="tabpanel">
+            <div class="calc-grid">
+              <div class="calc-fields">
+                <div class="calc-field">
+                  <label for="rp-amount">Loan amount</label>
+                  <div class="calc-input-wrap">
+                    <span class="calc-input-prefix">£</span>
+                    <input type="number" class="calc-input" id="rp-amount" value="250000" min="10000" max="5000000" step="1000" />
+                  </div>
+                  <input type="range" class="calc-slider" id="rp-amount-slider" min="10000" max="1500000" step="5000" value="250000" />
+                </div>
+
+                <div class="calc-field">
+                  <label for="rp-rate">Interest rate</label>
+                  <div class="calc-input-wrap">
+                    <input type="number" class="calc-input no-prefix has-suffix" id="rp-rate" value="4.75" min="0.5" max="15" step="0.05" />
+                    <span class="calc-input-suffix">%</span>
+                  </div>
+                  <input type="range" class="calc-slider" id="rp-rate-slider" min="0.5" max="10" step="0.05" value="4.75" />
+                </div>
+
+                <div class="calc-field">
+                  <label for="rp-term">Term</label>
+                  <div class="calc-input-wrap">
+                    <input type="number" class="calc-input no-prefix has-suffix" id="rp-term" value="25" min="5" max="40" step="1" />
+                    <span class="calc-input-suffix">years</span>
+                  </div>
+                  <input type="range" class="calc-slider" id="rp-term-slider" min="5" max="40" step="1" value="25" />
+                </div>
+
+                <div class="calc-field">
+                  <label>Repayment type</label>
+                  <div class="calc-radio-group">
+                    <div class="calc-radio">
+                      <input type="radio" id="rp-type-capital" name="rp-type" value="repayment" checked />
+                      <label for="rp-type-capital">Capital &amp; Interest</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="rp-type-io" name="rp-type" value="interest" />
+                      <label for="rp-type-io">Interest Only</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="calc-results">
+                <div class="calc-result-headline">
+                  <p class="calc-result-label">Estimated monthly payment</p>
+                  <div class="calc-result-value" id="rp-monthly">£0</div>
+                  <p class="calc-result-sub" id="rp-type-label">Capital &amp; interest repayment</p>
+                </div>
+
+                <div class="calc-result-rows">
+                  <div class="calc-result-row">
+                    <span>Total to repay over term</span>
+                    <span id="rp-total">—</span>
+                  </div>
+                  <div class="calc-result-row">
+                    <span>Total interest paid</span>
+                    <span id="rp-interest">—</span>
+                  </div>
+                  <div class="calc-result-row">
+                    <span>Interest as % of loan</span>
+                    <span id="rp-interest-pct">—</span>
+                  </div>
+                </div>
+
+                <p class="calc-result-note">
+                  Add 1% to your rate to see your likely stress-tested monthly figure — the number most lenders assess affordability against.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ STAMP DUTY PANEL ============ -->
+          <div class="calc-panel" id="panel-stamp" role="tabpanel">
+            <div class="calc-grid">
+              <div class="calc-fields">
+                <div class="calc-field">
+                  <label for="sd-price">Property price</label>
+                  <div class="calc-input-wrap">
+                    <span class="calc-input-prefix">£</span>
+                    <input type="number" class="calc-input" id="sd-price" value="350000" min="40000" max="10000000" step="1000" />
+                  </div>
+                  <input type="range" class="calc-slider" id="sd-price-slider" min="40000" max="2000000" step="5000" value="350000" />
+                </div>
+
+                <div class="calc-field">
+                  <label>Region</label>
+                  <div class="calc-radio-group">
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-region-eng" name="sd-region" value="england" checked />
+                      <label for="sd-region-eng">England / NI</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-region-sco" name="sd-region" value="scotland" />
+                      <label for="sd-region-sco">Scotland</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-region-wal" name="sd-region" value="wales" />
+                      <label for="sd-region-wal">Wales</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="calc-field">
+                  <label>Buyer type</label>
+                  <div class="calc-radio-group">
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-type-std" name="sd-type" value="standard" checked />
+                      <label for="sd-type-std">Standard</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-type-ftb" name="sd-type" value="ftb" />
+                      <label for="sd-type-ftb">First-Time Buyer</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="sd-type-second" name="sd-type" value="second" />
+                      <label for="sd-type-second">Additional / BTL</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="calc-results">
+                <div class="calc-result-headline">
+                  <p class="calc-result-label" id="sd-tax-label">Stamp Duty (SDLT)</p>
+                  <div class="calc-result-value" id="sd-total">£0</div>
+                  <p class="calc-result-sub" id="sd-effective">Effective rate: 0%</p>
+                </div>
+
+                <div class="calc-result-rows" id="sd-breakdown">
+                  <!-- band rows injected here -->
+                </div>
+
+                <p class="calc-result-note" id="sd-note">
+                  Figures apply to residential purchases in England and Northern Ireland at current rates. Scotland (LBTT) and Wales (LTT) have different bands.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ AFFORDABILITY PANEL ============ -->
+          <div class="calc-panel" id="panel-afford" role="tabpanel">
+            <div class="calc-grid">
+              <div class="calc-fields">
+                <div class="calc-field">
+                  <label for="af-income1">Your gross annual income</label>
+                  <div class="calc-input-wrap">
+                    <span class="calc-input-prefix">£</span>
+                    <input type="number" class="calc-input" id="af-income1" value="55000" min="10000" max="1000000" step="500" />
+                  </div>
+                  <input type="range" class="calc-slider" id="af-income1-slider" min="10000" max="250000" step="1000" value="55000" />
+                </div>
+
+                <div class="calc-field">
+                  <label for="af-income2">Joint applicant's income (optional)</label>
+                  <div class="calc-input-wrap">
+                    <span class="calc-input-prefix">£</span>
+                    <input type="number" class="calc-input" id="af-income2" value="0" min="0" max="1000000" step="500" />
+                  </div>
+                  <input type="range" class="calc-slider" id="af-income2-slider" min="0" max="250000" step="1000" value="0" />
+                </div>
+
+                <div class="calc-field">
+                  <label for="af-debt">Monthly credit commitments</label>
+                  <div class="calc-input-wrap">
+                    <span class="calc-input-prefix">£</span>
+                    <input type="number" class="calc-input" id="af-debt" value="0" min="0" max="10000" step="25" />
+                  </div>
+                  <p class="calc-result-sub" style="margin-top:8px;">Card minimums, car finance, personal loans. Excludes mortgage payments.</p>
+                </div>
+
+                <div class="calc-field">
+                  <label>Income multiple (lender flexibility)</label>
+                  <div class="calc-radio-group">
+                    <div class="calc-radio">
+                      <input type="radio" id="af-mult-std" name="af-mult" value="4.5" checked />
+                      <label for="af-mult-std">Standard (4.5x)</label>
+                    </div>
+                    <div class="calc-radio">
+                      <input type="radio" id="af-mult-stretch" name="af-mult" value="5.5" />
+                      <label for="af-mult-stretch">Stretched (5.5x)</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="calc-results">
+                <div class="calc-result-headline">
+                  <p class="calc-result-label">Approximate maximum borrowing</p>
+                  <div class="calc-result-value" id="af-max">£0</div>
+                  <p class="calc-result-sub">Based on income multiple, adjusted for commitments</p>
+                </div>
+
+                <div class="calc-result-rows">
+                  <div class="calc-result-row">
+                    <span>Combined gross income</span>
+                    <span id="af-combined">—</span>
+                  </div>
+                  <div class="calc-result-row">
+                    <span>Annual commitment adjustment</span>
+                    <span id="af-debt-annual">—</span>
+                  </div>
+                  <div class="calc-result-row">
+                    <span>Applied multiple</span>
+                    <span id="af-mult-applied">—</span>
+                  </div>
+                </div>
+
+                <p class="calc-result-note">
+                  This is an indicative figure. Actual lending depends on credit profile, deposit size, income type (PAYE, self-employed, dividend, bonus) and the specific lender's affordability rules.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-cta-row">
+            <a href="book-consultation.html" class="btn btn-gold">Get a Real Figure — Book a Call</a>
+            <a href="mortgages.html" class="btn btn-outline">Explore Mortgage Services</a>
+          </div>
+
+        </div>
+
+        <p class="calc-disclaimer">
+          These calculators provide indicative figures only and do not constitute mortgage advice. Your actual monthly payment, tax liability and borrowing power will depend on lender criteria, credit profile, property specifics and your full financial situation. Rates used in the repayment calculator are example rates for illustrative purposes and do not reflect specific product availability. Stamp Duty figures reflect current UK rates but tax rules change — please confirm with a solicitor or HMRC before committing.
+        </p>
+      </div>
+    </section>
+
+    <section class="final-cta section">
+      <div class="container">
+        <div class="final-cta-card">
+          <div class="final-cta-copy">
+            <p class="section-kicker">Speak to AZI Mortgages</p>
+            <h2>Turn the estimate into a real, whole-of-market figure</h2>
+            <p>
+              The calculator is a useful starting point. A short call adds the missing detail — your credit profile, which lenders match your income type, and the actual products available to you today.
+            </p>
+          </div>
+
+          <div class="final-cta-actions">
+            <a href="book-consultation.html" class="btn btn-gold">Book a Consultation</a>
+            <a href="contact.html" class="btn btn-outline">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="logo">AZI Mortgages</div>
+        <p>Whole-of-market mortgage guidance for buyers, homeowners and investors across the UK.</p>
+      </div>
+      <div class="footer-links-group">
+        <h4>Navigation</h4>
+        <a href="about.html">About</a>
+        <a href="mortgages.html">Mortgages</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="articles.html">Articles</a>
+        <a href="faq.html">FAQs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-links-group">
+        <h4>Services</h4>
+        <a href="mortgages/first-time-buyers.html">First-Time Buyers</a>
+        <a href="mortgages/remortgages.html">Remortgages</a>
+        <a href="mortgages/buy-to-let.html">Buy-to-Let</a>
+        <a href="mortgages/moving-home.html">Moving Home</a>
+        <a href="mortgages/specialist-mortgages.html">Specialist Mortgages</a>
+</div>
+      <div class="footer-links-group">
+        <h4>Legal</h4>
+        <a href="legal/privacy-policy.html">Privacy Policy</a>
+        <a href="legal/cookie-policy.html">Cookie Policy</a>
+        <a href="legal/terms-and-conditions.html">Terms &amp; Conditions</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p class="footer-disclaimer">
+        <strong>[PLACEHOLDER &mdash; REPLACE WITH REAL FIRM DETAILS]</strong> AZI Mortgages is a trading style of [Firm Name Ltd], authorised and regulated by the Financial Conduct Authority. FCA number: [XXXXXX]. Registered in England and Wales, company number [XXXXXXXX]. Registered office: [Address]. Your home may be repossessed if you do not keep up repayments on your mortgage. A fee may be payable for mortgage advice; the precise amount will depend on your circumstances but we estimate it will be [&pound;XXX].
+      </p>
+      <p>&copy; 2026 AZI Mortgages. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    // =================== MORTGAGE CALCULATOR ===================
+    (function () {
+      'use strict';
+
+      // ---------- Helpers ----------
+      const fmtGBP = (n) => {
+        if (!isFinite(n)) return '£0';
+        return '£' + Math.round(n).toLocaleString('en-GB');
+      };
+      const fmtGBPDecimal = (n) => {
+        if (!isFinite(n)) return '£0';
+        return '£' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      };
+
+      // ---------- Tab switching ----------
+      const tabs = document.querySelectorAll('.calc-tab');
+      const panels = document.querySelectorAll('.calc-panel');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.tab;
+          tabs.forEach((t) => {
+            const active = t === tab;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          panels.forEach((p) => {
+            p.classList.toggle('is-active', p.id === 'panel-' + target);
+          });
+        });
+      });
+
+      // ---------- Slider <-> number linking ----------
+      function linkSliderInput(inputId, sliderId, onChange) {
+        const input = document.getElementById(inputId);
+        const slider = document.getElementById(sliderId);
+        if (!input || !slider) return;
+        input.addEventListener('input', () => {
+          const v = parseFloat(input.value);
+          if (isFinite(v)) {
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
+            slider.value = Math.max(min, Math.min(max, v));
+          }
+          onChange();
+        });
+        slider.addEventListener('input', () => {
+          input.value = slider.value;
+          onChange();
+        });
+      }
+
+      // ---------- 1. REPAYMENT CALCULATOR ----------
+      function calcRepayment() {
+        const amount = parseFloat(document.getElementById('rp-amount').value) || 0;
+        const rate = parseFloat(document.getElementById('rp-rate').value) || 0;
+        const years = parseFloat(document.getElementById('rp-term').value) || 0;
+        const type = document.querySelector('input[name="rp-type"]:checked').value;
+
+        const n = years * 12;
+        const r = rate / 100 / 12;
+        let monthly = 0;
+        let total = 0;
+        let interest = 0;
+
+        if (type === 'interest') {
+          monthly = amount * r;
+          total = monthly * n + amount; // IO: pay interest + capital at end
+          interest = monthly * n;
+          document.getElementById('rp-type-label').textContent = 'Interest only — capital due at term end';
+        } else {
+          if (r === 0) {
+            monthly = amount / n;
+          } else {
+            monthly = (amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+          }
+          total = monthly * n;
+          interest = total - amount;
+          document.getElementById('rp-type-label').textContent = 'Capital & interest repayment';
+        }
+
+        document.getElementById('rp-monthly').textContent = fmtGBPDecimal(monthly);
+        document.getElementById('rp-total').textContent = fmtGBP(total);
+        document.getElementById('rp-interest').textContent = fmtGBP(interest);
+        const pct = amount > 0 ? (interest / amount) * 100 : 0;
+        document.getElementById('rp-interest-pct').textContent = pct.toFixed(1) + '%';
+      }
+
+      linkSliderInput('rp-amount', 'rp-amount-slider', calcRepayment);
+      linkSliderInput('rp-rate', 'rp-rate-slider', calcRepayment);
+      linkSliderInput('rp-term', 'rp-term-slider', calcRepayment);
+      document.querySelectorAll('input[name="rp-type"]').forEach((el) =>
+        el.addEventListener('change', calcRepayment)
+      );
+
+      // ---------- 2. STAMP DUTY CALCULATOR ----------
+      // Bands are progressive (marginal rates)
+      const SDLT_BANDS = {
+        // England & NI — residential
+        england: {
+          standard: [
+            { upTo: 250000, rate: 0 },
+            { upTo: 925000, rate: 5 },
+            { upTo: 1500000, rate: 10 },
+            { upTo: Infinity, rate: 12 }
+          ],
+          ftb: [
+            { upTo: 425000, rate: 0 },
+            { upTo: 625000, rate: 5 },
+            // above £625k FTB relief does not apply — fall back to standard rates
+            { upTo: 925000, rate: 5 },
+            { upTo: 1500000, rate: 10 },
+            { upTo: Infinity, rate: 12 }
+          ],
+          // Additional property: +5% surcharge on every band (from Oct 2024)
+          second: [
+            { upTo: 250000, rate: 5 },
+            { upTo: 925000, rate: 10 },
+            { upTo: 1500000, rate: 15 },
+            { upTo: Infinity, rate: 17 }
+          ],
+          label: 'Stamp Duty Land Tax (SDLT)',
+          note: 'England & Northern Ireland residential SDLT rates. Additional property surcharge is +5% on top of standard rates (from 31 October 2024). First-time buyer relief applies only on purchases up to £625,000.'
+        },
+        // Scotland — LBTT
+        scotland: {
+          standard: [
+            { upTo: 145000, rate: 0 },
+            { upTo: 250000, rate: 2 },
+            { upTo: 325000, rate: 5 },
+            { upTo: 750000, rate: 10 },
+            { upTo: Infinity, rate: 12 }
+          ],
+          ftb: [
+            { upTo: 175000, rate: 0 },
+            { upTo: 250000, rate: 2 },
+            { upTo: 325000, rate: 5 },
+            { upTo: 750000, rate: 10 },
+            { upTo: Infinity, rate: 12 }
+          ],
+          // ADS: +8% on full price (applied separately)
+          second: [
+            { upTo: 145000, rate: 8 },
+            { upTo: 250000, rate: 10 },
+            { upTo: 325000, rate: 13 },
+            { upTo: 750000, rate: 18 },
+            { upTo: Infinity, rate: 20 }
+          ],
+          label: 'Land and Buildings Transaction Tax (LBTT)',
+          note: 'Scotland LBTT rates. The Additional Dwelling Supplement (ADS) is 8% of the full purchase price on second homes and buy-to-lets (approximated here via combined bands).'
+        },
+        // Wales — LTT (no FTB relief)
+        wales: {
+          standard: [
+            { upTo: 225000, rate: 0 },
+            { upTo: 400000, rate: 6 },
+            { upTo: 750000, rate: 7.5 },
+            { upTo: 1500000, rate: 10 },
+            { upTo: Infinity, rate: 12 }
+          ],
+          ftb: null, // Wales has no FTB relief — use standard
+          second: [
+            { upTo: 180000, rate: 5 },
+            { upTo: 250000, rate: 8.5 },
+            { upTo: 400000, rate: 10 },
+            { upTo: 750000, rate: 12.5 },
+            { upTo: 1500000, rate: 15 },
+            { upTo: Infinity, rate: 17 }
+          ],
+          label: 'Land Transaction Tax (LTT)',
+          note: 'Wales LTT rates. Wales does not offer first-time buyer relief — the standard bands apply. Higher rate bands apply for additional property purchases.'
+        }
+      };
+
+      function calculateBandedTax(price, bands) {
+        let tax = 0;
+        let lower = 0;
+        const breakdown = [];
+        for (const band of bands) {
+          if (price <= lower) break;
+          const upper = Math.min(price, band.upTo);
+          const slice = upper - lower;
+          if (slice > 0 && band.rate > 0) {
+            const bandTax = slice * (band.rate / 100);
+            tax += bandTax;
+            breakdown.push({
+              range: '£' + Math.round(lower).toLocaleString('en-GB') + ' – £' + Math.round(upper).toLocaleString('en-GB'),
+              rate: band.rate + '%',
+              amount: bandTax
+            });
+          } else if (slice > 0) {
+            breakdown.push({
+              range: '£' + Math.round(lower).toLocaleString('en-GB') + ' – £' + Math.round(upper).toLocaleString('en-GB'),
+              rate: '0%',
+              amount: 0
+            });
+          }
+          lower = band.upTo;
+        }
+        return { tax, breakdown };
+      }
+
+      function calcStampDuty() {
+        const price = parseFloat(document.getElementById('sd-price').value) || 0;
+        const region = document.querySelector('input[name="sd-region"]:checked').value;
+        const type = document.querySelector('input[name="sd-type"]:checked').value;
+
+        const regionData = SDLT_BANDS[region];
+        let bands = regionData[type];
+        // Wales has no FTB relief — fall back
+        if (!bands) bands = regionData.standard;
+
+        // England FTB: if price > £625,000, FTB relief doesn't apply — use standard
+        if (region === 'england' && type === 'ftb' && price > 625000) {
+          bands = regionData.standard;
+        }
+
+        const result = calculateBandedTax(price, bands);
+        const effective = price > 0 ? (result.tax / price) * 100 : 0;
+
+        document.getElementById('sd-tax-label').textContent = regionData.label;
+        document.getElementById('sd-total').textContent = fmtGBP(result.tax);
+        document.getElementById('sd-effective').textContent = 'Effective rate: ' + effective.toFixed(2) + '%';
+        document.getElementById('sd-note').textContent = regionData.note;
+
+        const breakdownEl = document.getElementById('sd-breakdown');
+        breakdownEl.innerHTML = '';
+        result.breakdown.forEach((row) => {
+          if (row.amount === 0 && result.breakdown.length > 1) return;
+          const rowEl = document.createElement('div');
+          rowEl.className = 'calc-result-row';
+          rowEl.innerHTML = '<span>' + row.range + ' at ' + row.rate + '</span><span>' + fmtGBP(row.amount) + '</span>';
+          breakdownEl.appendChild(rowEl);
+        });
+        if (result.breakdown.length === 0 || result.tax === 0) {
+          breakdownEl.innerHTML = '<div class="calc-result-row"><span>No tax due at this price</span><span>£0</span></div>';
+        }
+      }
+
+      linkSliderInput('sd-price', 'sd-price-slider', calcStampDuty);
+      document.querySelectorAll('input[name="sd-region"], input[name="sd-type"]').forEach((el) =>
+        el.addEventListener('change', calcStampDuty)
+      );
+
+      // ---------- 3. AFFORDABILITY CALCULATOR ----------
+      function calcAfford() {
+        const i1 = parseFloat(document.getElementById('af-income1').value) || 0;
+        const i2 = parseFloat(document.getElementById('af-income2').value) || 0;
+        const debt = parseFloat(document.getElementById('af-debt').value) || 0;
+        const mult = parseFloat(document.querySelector('input[name="af-mult"]:checked').value);
+
+        const combined = i1 + i2;
+        const debtAnnual = debt * 12;
+        // Lenders typically reduce annualised income by a multiple of debt payments.
+        // Rough proxy: subtract 30x monthly commitments from max borrowing.
+        const maxBorrow = Math.max(0, combined * mult - debt * 30);
+
+        document.getElementById('af-max').textContent = fmtGBP(maxBorrow);
+        document.getElementById('af-combined').textContent = fmtGBP(combined);
+        document.getElementById('af-debt-annual').textContent = debt > 0 ? '– ' + fmtGBP(debt * 30) + ' (approx)' : '£0';
+        document.getElementById('af-mult-applied').textContent = mult.toFixed(1) + 'x income';
+      }
+
+      linkSliderInput('af-income1', 'af-income1-slider', calcAfford);
+      linkSliderInput('af-income2', 'af-income2-slider', calcAfford);
+      document.getElementById('af-debt').addEventListener('input', calcAfford);
+      document.querySelectorAll('input[name="af-mult"]').forEach((el) =>
+        el.addEventListener('change', calcAfford)
+      );
+
+      // Initial runs
+      calcRepayment();
+      calcStampDuty();
+      calcAfford();
+    })();
+  </script>
+</body>
+</html>

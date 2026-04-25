@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Free Mortgage Consultation | AZI Mortgages</title>
+  <meta
+    name="description"
+    content="Book a free, no-obligation mortgage consultation with AZI Mortgages. Our guided enquiry form captures the key details so we can come back with a useful response."
+  />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo">AZI Mortgages</div>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="mortgages.html">Mortgages</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="mortgage-calculator.html">Calculator</a>
+        <a href="articles.html">Articles</a>
+        <a href="contact.html">Contact</a>
+      <a href="book-consultation.html" class="btn btn-gold nav-cta-mobile">Book a Consultation</a>
+      </nav>
+      <a href="book-consultation.html" class="btn btn-gold nav-cta-desktop">Book a Consultation</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section enquiry-hero">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-kicker">Book a Free Consultation</p>
+          <h1>Tell us about your mortgage situation</h1>
+          <p class="section-subtext">
+            A short guided form — seven quick questions — so we have the full picture before we call you back. No obligation to proceed, and the initial consultation is free of charge.
+          </p>
+        </div>
+
+        <div class="enquiry-shell">
+          <div class="enquiry-progress-wrap">
+            <div class="enquiry-progress-bar">
+              <div class="enquiry-progress-fill" id="progressFill"></div>
+            </div>
+            <p class="enquiry-progress-text" id="progressText">Step 1 of 7</p>
+          </div>
+
+          <form class="enquiry-form" id="enquiryForm">
+            <div class="form-step active" data-step="1">
+              <label for="enquiryType">What do you need help with?</label>
+              <select id="enquiryType" name="enquiry_type" required>
+                <option value="">Select an option</option>
+                <option value="first_time_buyer">First-Time Buyer</option>
+                <option value="remortgage">Remortgage</option>
+                <option value="buy_to_let">Buy-to-Let / Investment</option>
+                <option value="moving_home">Moving Home</option>
+                <option value="specialist">Specialist / Complex Case</option>
+<option value="general">General Mortgage Enquiry</option>
+              </select>
+            </div>
+
+            <div class="form-step" data-step="2">
+              <label for="fullName">What is your full name?</label>
+              <input
+                type="text"
+                id="fullName"
+                name="full_name"
+                placeholder="Enter your full name"
+                minlength="3"
+                required
+              />
+            </div>
+
+            <div class="form-step" data-step="3">
+              <label for="email">What is your email address?</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email address"
+                required
+              />
+            </div>
+
+            <div class="form-step" data-step="4">
+              <label for="phone">What is your phone number?</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter your phone number"
+                minlength="8"
+                required
+              />
+            </div>
+
+            <div class="form-step" data-step="5">
+              <label for="budget">What is your approximate budget or property value?</label>
+              <input
+                type="text"
+                id="budget"
+                name="budget"
+                placeholder="e.g. £250,000"
+                minlength="3"
+                required
+              />
+            </div>
+
+            <div class="form-step" data-step="6">
+              <label for="timeline">How soon are you looking to move forward?</label>
+              <select id="timeline" name="timeline" required>
+                <option value="">Select an option</option>
+                <option value="asap">As soon as possible</option>
+                <option value="1_3_months">Within 1–3 months</option>
+                <option value="3_6_months">Within 3–6 months</option>
+                <option value="just_exploring">Just exploring options</option>
+              </select>
+            </div>
+
+            <div class="form-step" data-step="7">
+              <label for="message">Tell us a little more about your situation</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Share any useful details about your mortgage enquiry"
+                minlength="10"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-success" id="formSuccess">
+              <div class="form-success-card">
+                <h2>Thank you &mdash; your enquiry has been received.</h2>
+                <p>
+                  A member of the AZI Mortgages team will be in touch shortly, usually within one working day. In the meantime, feel free to explore our <a href="articles.html" class="text-link">article library</a> or <a href="mortgages.html" class="text-link">mortgage services</a>.
+                </p>
+              </div>
+            </div>
+
+            <div class="enquiry-actions">
+              <button type="button" class="btn btn-outline" id="prevBtn">Back</button>
+              <button type="button" class="btn btn-gold" id="nextBtn">Continue</button>
+              <button type="submit" class="btn btn-gold" id="submitBtn">Submit Enquiry</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="logo">AZI Mortgages</div>
+        <p>Whole-of-market mortgage guidance for buyers, homeowners and investors across the UK.</p>
+      </div>
+      <div class="footer-links-group">
+        <h4>Navigation</h4>
+        <a href="about.html">About</a>
+        <a href="mortgages.html">Mortgages</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="articles.html">Articles</a>
+        <a href="faq.html">FAQs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-links-group">
+        <h4>Services</h4>
+        <a href="mortgages/first-time-buyers.html">First-Time Buyers</a>
+        <a href="mortgages/remortgages.html">Remortgages</a>
+        <a href="mortgages/buy-to-let.html">Buy-to-Let</a>
+        <a href="mortgages/moving-home.html">Moving Home</a>
+        <a href="mortgages/specialist-mortgages.html">Specialist Mortgages</a>
+</div>
+      <div class="footer-links-group">
+        <h4>Legal</h4>
+        <a href="legal/privacy-policy.html">Privacy Policy</a>
+        <a href="legal/cookie-policy.html">Cookie Policy</a>
+        <a href="legal/terms-and-conditions.html">Terms &amp; Conditions</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p class="footer-disclaimer">
+        <strong>[PLACEHOLDER &mdash; REPLACE WITH REAL FIRM DETAILS]</strong> AZI Mortgages is a trading style of [Firm Name Ltd], authorised and regulated by the Financial Conduct Authority. FCA number: [XXXXXX]. Registered in England and Wales, company number [XXXXXXXX]. Registered office: [Address]. Your home may be repossessed if you do not keep up repayments on your mortgage. A fee may be payable for mortgage advice; the precise amount will depend on your circumstances but we estimate it will be [&pound;XXX].
+      </p>
+      <p>&copy; 2026 AZI Mortgages. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
